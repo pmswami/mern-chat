@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppStore } from "@/store";
 import { useNavigate } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
@@ -7,17 +7,58 @@ import { getColor, colors } from "@/lib/utils";
 import { FaPlus, FaTrash } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { apiClient } from "@/lib/api-client";
+import { UPDATE_PROFILE_ROUTE } from "@/utils/constants";
 
 function Profile() {
   const navigate = useNavigate();
   const { userInfo, setUserInfo } = useAppStore();
   const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState();
+  const [lastName, setLastName] = useState("");
   const [image, setImage] = useState(null);
   const [hovered, setHovered] = useState(false);
   const [selectedColor, setSelectedColor] = useState(0);
 
-  const saveChanges = async () => {};
+  useEffect(() => {
+    if (userInfo.profileSetup) {
+      setFirstName(userInfo.firstName);
+      setLastName(userInfo.lastName);
+      setSelectedColor(userInfo.color);
+    }
+  }, [userInfo]);
+
+  const validateProfile = () => {
+    if (!firstName) {
+      toast.error("Firstname is required");
+      return false;
+    }
+    if (!lastName) {
+      toast.error("Lastname is required");
+      return false;
+    }
+    return true;
+  };
+  const saveChanges = async () => {
+    if (validateProfile()) {
+      try {
+        const response = await apiClient.post(
+          UPDATE_PROFILE_ROUTE,
+          {
+            firstName,
+            lastName,
+            color: selectedColor,
+          },
+          { withCredentials: true }
+        );
+        if (response.status === 200 && response.data) {
+          setUserInfo({ ...response.data });
+          toast.success("Profile updated successfully");
+          navigate("/chat");
+        }
+      } catch (error) {}
+    }
+  };
 
   return (
     <div className="bg-[#1b1c24] h-[100vh] flex items-center justify-center flex-col gap-10">

@@ -65,15 +65,19 @@ function Auth() {
   };
 
   const handleSignup = async () => {
+    console.log("handlesignup");
     if (validateSignup()) {
       const response = await apiClient.post(
         SIGNUP_ROUTE,
         { email, password },
         { withCredentials: true }
       );
+      console.log(response);
       if (response.status === 201) {
         setUserInfo(response.data.user);
         navigate("/profile");
+      } else if (response.status === 400) {
+        toast.error(`${response.message}`);
       }
       console.log({ response });
     }

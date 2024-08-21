@@ -1,7 +1,7 @@
 import User from "../models/UserModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { renameSync, unlink } from "fs";
+import { renameSync, unlink, unlinkSync } from "fs";
 
 const maxAge = 3 * 24 * 60 * 60 * 1000; //3days expiry
 const createToken = (email, userId) => {
@@ -138,7 +138,7 @@ export const addProfileImage = async (request, response, next) => {
 
         const date = Date.now();
         console.log(request.file);
-        let fileName = "upload/profiles/" + date + "-" + request.file.originalname;
+        let fileName = "uploads/profiles/" + date + "-" + request.file.originalname;
         console.log(fileName);
         renameSync(request.file.path, fileName);
         // console.log("date", date);
@@ -157,21 +157,16 @@ export const removeProfileImage = async (request, response, next) => {
     try {
 
         const { userId } = request;
-        const { firstName, lastName, color } = request.body;
-        console.log(userId, firstName, lastName, color);
-        if (!firstName || !lastName) {
-            return response.status(404).send("Firstname, lastname and color is required");
+        const user = await User.findById(userId);
+        if (!user) {
+            return response.status(404).send("User not found");
         }
-        const userData = await User.findByIdAndUpdate(userId, { firstName, lastName, color, profileSetup: true }, { new: true, runValidators: true });
-        return response.status(200).json({
-            id: userData.id,
-            email: userData.email,
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            color: userData.color,
-            image: userData.image,
-            profileSetup: userData.profileSetup
-        });
+        if (user.image) {
+            unlinkSync(user.image);
+        }
+        user.image = null;
+        user.save();
+        return response.status(200).send("User image removed successfully");
     }
     catch (error) {
         console.log(error);

@@ -10,7 +10,11 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
 import { UPDATE_PROFILE_ROUTE } from "@/utils/constants";
-import { ADD_PROFILE_IMAGE_ROUTE } from "../../utils/constants";
+import {
+  ADD_PROFILE_IMAGE_ROUTE,
+  HOST,
+  REMOVE_PROFILE_IMAGE_ROUTE,
+} from "../../utils/constants";
 
 function Profile() {
   const navigate = useNavigate();
@@ -23,10 +27,15 @@ function Profile() {
   const fileInputRef = useRef(null);
 
   useEffect(() => {
+    // console.log("userinfo", userInfo);
     if (userInfo.profileSetup) {
       setFirstName(userInfo.firstName);
       setLastName(userInfo.lastName);
       setSelectedColor(userInfo.color);
+    }
+    // console.log(`${HOST}/${userInfo.image}`);
+    if (userInfo.image) {
+      setImage(`${HOST}/${userInfo.image}`);
     }
   }, [userInfo]);
 
@@ -98,7 +107,18 @@ function Profile() {
     }
   };
 
-  const handleDeleteImage = async () => {};
+  const handleDeleteImage = async () => {
+    try {
+      const response = await apiClient.delete(REMOVE_PROFILE_IMAGE_ROUTE, {
+        withCredentials: true,
+      });
+      if (response.status === 200) {
+        setUserInfo({ ...userInfo, image: null });
+        toast.success("Profile Image removed successfully");
+        setImage(null);
+      }
+    } catch (error) {}
+  };
 
   return (
     <div className="bg-[#1b1c24] h-[100vh] flex items-center justify-center flex-col gap-10">

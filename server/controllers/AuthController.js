@@ -14,14 +14,14 @@ export const signup = async (request, response, next) => {
         if (!email || !password) {
             return response.status(400).send("Email or password is required");
         }
-        console.log(email, password);
+        // console.log(email, password);
         const old_user = await User.findOne({ email });
         if (old_user) {
-            console.log("old user", old_user);
+            // console.log("old user", old_user);
             return response.status(400).send("User Already exists");
         }
         const user = await User.create({ email, password });
-        console.log("new user", user);
+        // console.log("new user", user);
         response.cookie("jwt", createToken(email, user.id), {
             maxAge, secure: true, sameSite: "None"
         });
@@ -44,7 +44,7 @@ export const signup = async (request, response, next) => {
 
 export const login = async (request, response, next) => {
     try {
-        console.log("login route");
+        // console.log("login route");
         const { email, password } = request.body;
         if (!email || !password) {
             return response.status(400).send("Email or password is required");
@@ -107,7 +107,7 @@ export const updateProfile = async (request, response, next) => {
 
         const { userId } = request;
         const { firstName, lastName, color } = request.body;
-        console.log(userId, firstName, lastName, color);
+        // console.log(userId, firstName, lastName, color);
         if (!firstName || !lastName) {
             return response.status(404).send("Firstname, lastname and color is required");
         }
@@ -137,9 +137,9 @@ export const addProfileImage = async (request, response, next) => {
         }
 
         const date = Date.now();
-        console.log(request.file);
+        // console.log(request.file);
         let fileName = "uploads/profiles/" + date + "-" + request.file.originalname;
-        console.log(fileName);
+        // console.log(fileName);
         renameSync(request.file.path, fileName);
         // console.log("date", date);
         // console.log("user ID", request.userId);

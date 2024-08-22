@@ -9,12 +9,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
-import { UPDATE_PROFILE_ROUTE } from "@/utils/constants";
 import {
   ADD_PROFILE_IMAGE_ROUTE,
   HOST,
   REMOVE_PROFILE_IMAGE_ROUTE,
-} from "../../utils/constants";
+  UPDATE_PROFILE_ROUTE,
+} from "@/utils/constants";
 
 function Profile() {
   const navigate = useNavigate();

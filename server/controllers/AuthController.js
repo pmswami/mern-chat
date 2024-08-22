@@ -80,7 +80,6 @@ export const login = async (request, response, next) => {
 
 export const getUserInfo = async (request, response, next) => {
     try {
-        // console.log(request.userId);
         const userData = await User.findById(request.userId);
         if (!userData) {
             return response.status(404).send("User with given ID doesnt exists");
@@ -107,7 +106,6 @@ export const updateProfile = async (request, response, next) => {
 
         const { userId } = request;
         const { firstName, lastName, color } = request.body;
-        // console.log(userId, firstName, lastName, color);
         if (!firstName || !lastName) {
             return response.status(404).send("Firstname, lastname and color is required");
         }
@@ -135,14 +133,9 @@ export const addProfileImage = async (request, response, next) => {
         if (!request.file) {
             return response.status(400).send("File is required");
         }
-
         const date = Date.now();
-        // console.log(request.file);
         let fileName = "uploads/profiles/" + date + "-" + request.file.originalname;
-        // console.log(fileName);
         renameSync(request.file.path, fileName);
-        // console.log("date", date);
-        // console.log("user ID", request.userId);
         const updateUser = await User.findOneAndUpdate({ _id: request.userId }, { image: fileName }, { new: true, runValidators: true });
         return response.status(200).json({ image: updateUser.image });
     }
@@ -155,7 +148,6 @@ export const addProfileImage = async (request, response, next) => {
 
 export const removeProfileImage = async (request, response, next) => {
     try {
-
         const { userId } = request;
         const user = await User.findById(userId);
         if (!user) {
@@ -167,6 +159,20 @@ export const removeProfileImage = async (request, response, next) => {
         user.image = null;
         user.save();
         return response.status(200).send("User image removed successfully");
+    }
+    catch (error) {
+        console.log(error);
+        return response.status(500).send("Internal Server Error");
+    }
+};
+
+
+export const logout = async (request, response, next) => {
+    try {
+        response.cookie("jwt", "", {
+            maxAge: 1, secure: true, sameSite: "None"
+        });
+        return response.status(200).send("Logout Successful");
     }
     catch (error) {
         console.log(error);

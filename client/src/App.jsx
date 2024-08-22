@@ -34,9 +34,7 @@ function App() {
         } else {
           setUserInfo(undefined);
         }
-        console.log(response);
       } catch (error) {
-        // console.log(error);
         setUserInfo(undefined);
       } finally {
         setLoading(false);

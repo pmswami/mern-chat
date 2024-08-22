@@ -7,7 +7,7 @@ import ChatContainer from "./components/chat-container";
 import EmptyChatContainer from "./components/empty-chat-container";
 
 function Chat() {
-  const { userInfo } = useAppStore();
+  const { userInfo, selectedChatType } = useAppStore();
   const navigate = useNavigate();
   useEffect(() => {
     // console.log("userInfo", userInfo);
@@ -22,6 +22,11 @@ function Chat() {
       <ContactsContainer />
       {/* <EmptyChatContainer /> */}
       {/* <ChatContainer /> */}
+      {selectedChatType === undefined ? (
+        <EmptyChatContainer />
+      ) : (
+        <ChatContainer />
+      )}
     </div>
   );
 }

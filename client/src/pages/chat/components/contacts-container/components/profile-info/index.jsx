@@ -1,7 +1,6 @@
 import React from "react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { useAppStore } from "@/store";
-// import { HOST } from "@/utils/constants";
 import { getColor } from "@/lib/utils";
 import {
   Tooltip,
@@ -23,7 +22,7 @@ function ProfileInfo() {
       const response = await apiClient.post(
         LOGOUT_ROUTE,
         {},
-        { withCredentias: true }
+        { withCredentials: true }
       );
       if (response.status == 200) {
         navigate("/auth");

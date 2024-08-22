@@ -160,9 +160,9 @@ function Auth() {
             </Tabs>
           </div>
         </div>
-        <div className="hidden xl:flex justify-center items-center">
+        {/* <div className="hidden xl:flex justify-center items-center">
           <img src={Background} alt="Background Login" className="h-[700px]" />
-        </div>
+        </div> */}
       </div>
     </div>
   );

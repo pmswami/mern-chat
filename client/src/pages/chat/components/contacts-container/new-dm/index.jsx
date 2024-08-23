@@ -31,7 +31,6 @@ function NewDM() {
 
   const searchContacts = async (searchTerm) => {
     try {
-      console.log("search contacts routes", SEARCH_CONTACTS_ROUTES);
       if (searchTerm.length > 0) {
         const response = await apiClient.post(
           SEARCH_CONTACTS_ROUTES,
@@ -99,7 +98,7 @@ function NewDM() {
                           <AvatarImage
                             src={`${HOST}/${contact.image}`}
                             alt="profile"
-                            className="object-cover w-full h-full bg-black"
+                            className="object-cover w-full h-full bg-black rounded-full"
                           />
                         ) : (
                           <div
